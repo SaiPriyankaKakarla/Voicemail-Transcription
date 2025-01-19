@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voicemail Transcription Upload</title>
+</head>
+<body>
+    <h1>Upload Your Voicemail</h1>
+
+    <!-- File Upload Form -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput" required />
+        <button type="submit">Upload File</button>
+    </form>
+
+    <h3 id="responseMessage"></h3>
+
+    <script>
+        // Event listener for form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            var formData = new FormData();
+            formData.append("file", document.getElementById('fileInput').files[0]);
+
+            // Send the POST request with the file to the backend
+            fetch('http://127.0.0.1:5000/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show the response message
+                if (data.message) {
+                    document.getElementById('responseMessage').innerHTML = 'File uploaded successfully! Job Name: ' + data.job_name;
+                } else {
+                    document.getElementById('responseMessage').innerHTML = 'Error: ' + data.error;
+                }
+            })
+            .catch(error => {
+                document.getElementById('responseMessage').innerHTML = 'Error: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>
